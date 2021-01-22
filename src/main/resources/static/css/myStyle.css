@@ -1,0 +1,15 @@
+body {
+   background-color: #e97a7a;
+}
+
+ #load_date{
+   color:green;
+   
+ }
+
+ #code_snippet{
+   background-color:#8b4f80;
+   border-style:solid;
+   border-width: 1px;
+   padding: 10px;
+ }
