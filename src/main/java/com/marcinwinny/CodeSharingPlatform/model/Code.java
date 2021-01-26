@@ -1,26 +1,31 @@
 package com.marcinwinny.CodeSharingPlatform.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+@Builder
 @Entity
 @Table(name = "code")
+@Getter
+@Setter
 public class Code {
 
+    // w encji powinno być jak najmniej operacji i pól których nie ma w bazie
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonIgnore
-    private Long genId;
+    private Long id;
 
     private String code;
     private String date;
 
-    @JsonIgnore
-    private String id;
     private Long time;
     private Long views;
 
@@ -41,15 +46,14 @@ public class Code {
     public Code() {
     }
 
-    public Code(String id) {
-        this.id = id;
-    }
+    // taka logika powinna być gdzieś w serwisie albo np. mapperze przy przechodzeniu z DTO na Encje
 
     public Code(String code, Long time, Long views) {
         this.code = code;
         this.preciseDate = LocalDateTime.now();
         this.date = formatDate(preciseDate);
-        this.id = UUID.randomUUID().toString();
+        // tego nie potrzeba - id obiektu powinna nadawać baza i powinno być jedno
+//        this.id = UUID.randomUUID().toString();
 
         if(time < 0){
             time = 0L;
@@ -82,59 +86,52 @@ public class Code {
         return formatDateTime;
     }
 
-    public Boolean isRestricted() {
-        return restricted;
-    }
-
-    public Long getGenId() {
-        return genId;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
-    }
-
-    public Long getViews() {
-        return views;
-    }
-
-    public void setViews(Long views) {
-        this.views = views;
-    }
-
-    public LocalDateTime getPreciseDate() {
-        return preciseDate;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public Boolean isRestrictedTime() {
-        return restrictedTime;
-    }
-
-    public Boolean isRestrictedViews() {
-        return restrictedViews;
-    }
-
-    public LocalDateTime getTerminateDate() {
-        return terminateDate;
-    }
+    // zamiast boilerplate kodu ja wciskam lomboka gdzie się da i robię to adnotacjami jak wyżej -> @Getter, @Setter, @Builder itp
+//    public Boolean isRestricted() {
+//        return restricted;
+//    }
+//
+//    public long getTime() {
+//        return time;
+//    }
+//
+//    public void setTime(long time) {
+//        this.time = time;
+//    }
+//
+//    public Long getViews() {
+//        return views;
+//    }
+//
+//    public void setViews(Long views) {
+//        this.views = views;
+//    }
+//
+//    public LocalDateTime getPreciseDate() {
+//        return preciseDate;
+//    }
+//
+//    public String getDate() {
+//        return date;
+//    }
+//
+//    public String getCode() {
+//        return code;
+//    }
+//
+//    public void setCode(String code) {
+//        this.code = code;
+//    }
+//
+//    public Boolean isRestrictedTime() {
+//        return restrictedTime;
+//    }
+//
+//    public Boolean isRestrictedViews() {
+//        return restrictedViews;
+//    }
+//
+//    public LocalDateTime getTerminateDate() {
+//        return terminateDate;
+//    }
 }

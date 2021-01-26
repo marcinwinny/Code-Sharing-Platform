@@ -23,11 +23,12 @@ public class WebController {
     }
 
     // 2. GET /code/N should return HTML that contains the N-th uploaded code snippet.
-    @GetMapping(path="/code/{UUID}")
-    public String getCodeSnippetHtmlByN(HttpServletResponse response, @PathVariable String UUID, Model model){
+    @GetMapping(path="/code/{id}")
+    // zamiast UUID wystarczy id - będzie wiadomo o co chodzi
+    public String getCodeSnippetHtmlByN(HttpServletResponse response, @PathVariable Long id, Model model){
         response.setContentType("text/html");
 
-        model.addAttribute("code", codeService.getCodeSnippetByUUID(UUID));
+        model.addAttribute("code", codeService.getCodeSnippetByUUID(id));
 
         return "codeByUUID";
     }
