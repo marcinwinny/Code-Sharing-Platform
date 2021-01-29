@@ -3,11 +3,11 @@
 Code sharing platform which enables to post your code and add time and number of views restrictions.
 
 ### API endpoints
-* Get JSON with the code snippet with given UUID
+* Get JSON with the code snippet with given id
 ```sh
-GET: /api/code/{UUID}
+GET: /api/code/{id}
 ```
-* Add new code snippet. JSON object should have fields code, time and views. Return UUID which gives acces to code snippet.
+* Add new code snippet. JSON object should have fields code, time and views. Return id which gives acces to code snippet.
 ```sh
 POST: /api/code/new
 ```
@@ -17,9 +17,9 @@ GET: /api/code/latest
 ```
 
 ### Web endpoints
-* Return HTML that contains the code snippet with given UUID 
+* Return HTML that contains the code snippet with given id 
 ```sh
-/code/UUID
+/code/id
 ```
 * Return HTML where you can add new code snippet
 ```sh
