@@ -18,5 +18,4 @@ public class CodeDto {
     private Long time;
     private Long views;
     private Long id;
-
 }

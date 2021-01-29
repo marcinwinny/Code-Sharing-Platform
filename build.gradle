@@ -28,7 +28,16 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-freemarker'
 
 	compile("org.springframework.boot:spring-boot-starter-web")
-	compileOnly "org.projectlombok:lombok:1.18.12"
+
+	compileOnly 'org.projectlombok:lombok:1.18.16'
+	annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+	testCompileOnly 'org.projectlombok:lombok:1.18.16'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+	implementation 'org.mapstruct:mapstruct:1.4.1.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
+
 }
 
 test {

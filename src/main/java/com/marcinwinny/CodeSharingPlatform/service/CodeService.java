@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -28,29 +29,17 @@ public class CodeService {
 
         long howManyOnPage = 10;
 
-//        long countNotRestricted = StreamSupport.stream(codeRepository.findAll().spliterator(), false)
-//                .filter(code -> !code.isRestricted()).count();
+        long countNotRestricted = codeRepository.countAllByRestrictedFalse();
 
-        // to jest jedna opcja, druga (lepsza, bo jak coś się da zwalić na bazę to zazwyczaj warto to zrobić):
-        long countNotRestricted1 = codeRepository.countAllByRestrictedFalse();
-        long countNotRestricted = codeRepository.findAll().stream().filter(code -> !code.getRestricted()).count();
-
-        return StreamSupport.stream(codeRepository.findAll().spliterator(), false)
+        return codeRepository.findAll().stream()
                 .filter(code -> !code.getRestricted())
                 .skip(Math.max(0, countNotRestricted - howManyOnPage))
                 .sorted(Comparator.comparing(Code::getPreciseDate).reversed())
                 .collect(Collectors.toList());
     }
 
-    public void updateTimeInAllRestrictedByTime(){
-
-        StreamSupport.stream(codeRepository.findAll().spliterator(), false)
-                .filter(code -> code.getTime() > 0)
-                .forEach(this::updateTime);
-    }
-
-    public Code getCodeSnippetByUUID(Long UUID){
-        Optional<Code> codeOptional = codeRepository.findById(UUID);
+    public Code getCodeSnippetById(Long id){
+        Optional<Code> codeOptional = codeRepository.findById(id);
 
         // response nie powinno pojawiać się poza kontrolerem
         codeOptional.orElseThrow(() ->
@@ -58,7 +47,7 @@ public class CodeService {
 
         updateTimeOnRequest(codeOptional.get());
 
-        codeOptional = codeRepository.findById(UUID);
+        codeOptional = codeRepository.findById(id);
 
         codeOptional.orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Code snippet not found"));
@@ -78,16 +67,6 @@ public class CodeService {
         }
     }
 
-    private void updateTime(Code code){
-        if(code.getTime() > 0){
-            code.setTime(code.getTime() - 1);
-            codeRepository.save(code);
-            if(code.getTime() == 0){
-                codeRepository.delete(code);
-            }
-        }
-    }
-
     private void updateTimeOnRequest(Code code){
         if(code.getTime() > 0){
             long timeDifference = ChronoUnit.SECONDS.between(LocalDateTime.now(), code.getTerminateDate());
@@ -100,4 +79,5 @@ public class CodeService {
             }
         }
     }
+
 }
