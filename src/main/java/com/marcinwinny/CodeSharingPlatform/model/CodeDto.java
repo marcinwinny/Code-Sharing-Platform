@@ -1,48 +1,22 @@
 package com.marcinwinny.CodeSharingPlatform.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 public class CodeDto {
 
     private String code;
-    private long time;
-    private long views;
+    private Long time;
+    private Long views;
+    private Long id;
 
-    public CodeDto() {
-    }
-
-    public CodeDto(String code) {
-        this.code = code;
-    }
-
-    public CodeDto(String code, long time, long views){
-        this.code = code;
-        this.time = time;
-        this.views = views;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(long time) {
-        this.time = time;
-    }
-
-    public long getViews() {
-        return views;
-    }
-
-    public void setViews(long views) {
-        this.views = views;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
 }

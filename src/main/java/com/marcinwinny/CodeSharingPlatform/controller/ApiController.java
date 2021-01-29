@@ -18,38 +18,41 @@ public class ApiController {
     @Autowired
     CodeRepository codeRepository;
 
-    private Code code;
-
     @Autowired
     CodeService codeService;
 
     // 1. GET /api/code/N should return JSON with the N-th uploaded code snippet.
-    @GetMapping(path="/api/code/{UUID}")
-    public Code getCodeSnippetJsonByUUID(@PathVariable String UUID){
+    @GetMapping(path = "/api/code/{UUID}")
+    public Code getCodeSnippetJsonByUUID(@PathVariable Long UUID) {
         return codeService.getCodeSnippetByUUID(UUID);
     }
 
     // 3. POST /api/code/new should take a JSON object with a single field code, use it as the current code snippet,
     // and return JSON with a single field id. ID is the unique number of the snippet that helps you can access
     // it via the endpoint GET /code/N.
-    @PostMapping(path="/api/code/new")
-    public String postCode(@RequestBody CodeDto codeDto){
-        code = new Code(codeDto.getCode(), codeDto.getTime(), codeDto.getViews());
-        codeRepository.save(code);
-        JsonObject json = new JsonObject();
-        json.addProperty("id", code.getId());
-        return json.toString();
+    @PostMapping(path = "/api/code/new")
+    public CodeDto postCode(@RequestBody CodeDto codeDto) {
+        // powinno zwracać się obiekty, API to sobie przetłumaczy na JSONa, nie trzeba pakować tego do stringow
+        // plus POST zwracający nowo dodany obiekt to dobra praktyka
+        Code codeToSave = Code.builder().code(codeDto.getCode()).time(codeDto.getTime()).views(codeDto.getViews()).build();
+        Code codeFromDb = codeRepository.save(codeToSave);
+        return CodeDto.builder()
+                .id(codeFromDb.getId())
+                .code(codeFromDb.getCode())
+                .views(codeFromDb.getViews())
+                .time(codeFromDb.getTime())
+                .build();
     }
 
     // 5. GET /api/code/latest should return a JSON array with 10 most recently uploaded code snippets sorted from the newest to the oldest.
-    @GetMapping(path="/api/code/latest")
-    public List<Code> getTenRecentlyUploadedJson(HttpServletResponse response){
+    @GetMapping(path = "/api/code/latest")
+    public List<Code> getTenRecentlyUploadedJson(HttpServletResponse response) {
         response.setContentType("json/application");
         return codeService.getTenRecentlyUploaded();
     }
 
-    @DeleteMapping(path="/api/code/deleteAll")
-    public String deleteAll(){
+    @DeleteMapping(path = "/api/code/deleteAll")
+    public String deleteAll() {
         codeRepository.deleteAll();
         return "All the code snippets have been deleted";
     }

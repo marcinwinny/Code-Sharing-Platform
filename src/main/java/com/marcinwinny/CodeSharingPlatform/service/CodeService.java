@@ -24,17 +24,19 @@ public class CodeService {
     @Autowired
     CodeRepository codeRepository;
 
-    private Code code;
-
     public List<Code> getTenRecentlyUploaded(){
 
         long howManyOnPage = 10;
 
-        long countNotRestricted = StreamSupport.stream(codeRepository.findAll().spliterator(), false)
-                .filter(code -> !code.isRestricted()).count();
+//        long countNotRestricted = StreamSupport.stream(codeRepository.findAll().spliterator(), false)
+//                .filter(code -> !code.isRestricted()).count();
+
+        // to jest jedna opcja, druga (lepsza, bo jak coś się da zwalić na bazę to zazwyczaj warto to zrobić):
+        long countNotRestricted1 = codeRepository.countAllByRestrictedFalse();
+        long countNotRestricted = codeRepository.findAll().stream().filter(code -> !code.getRestricted()).count();
 
         return StreamSupport.stream(codeRepository.findAll().spliterator(), false)
-                .filter(code -> !code.isRestricted())
+                .filter(code -> !code.getRestricted())
                 .skip(Math.max(0, countNotRestricted - howManyOnPage))
                 .sorted(Comparator.comparing(Code::getPreciseDate).reversed())
                 .collect(Collectors.toList());
@@ -47,9 +49,10 @@ public class CodeService {
                 .forEach(this::updateTime);
     }
 
-    public Code getCodeSnippetByUUID(String UUID){
+    public Code getCodeSnippetByUUID(Long UUID){
         Optional<Code> codeOptional = codeRepository.findById(UUID);
 
+        // response nie powinno pojawiać się poza kontrolerem
         codeOptional.orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Code snippet not found"));
 

@@ -28,6 +28,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-freemarker'
 
 	compile("org.springframework.boot:spring-boot-starter-web")
+	compileOnly "org.projectlombok:lombok:1.18.12"
 }
 
 test {
