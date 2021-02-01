@@ -41,7 +41,7 @@ public class CodeService {
     public Code getCodeSnippetById(Long id){
         Optional<Code> codeOptional = codeRepository.findById(id);
 
-        // response nie powinno pojawiać się poza kontrolerem
+        // response should be only in controller
         codeOptional.orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Code snippet not found"));
 
@@ -80,4 +80,40 @@ public class CodeService {
         }
     }
 
+    public Code applyRestrictions(Code code){
+
+        code.setPreciseDate(LocalDateTime.now());
+        code.setDate(formatDate(code.getPreciseDate()));
+        code.setRestrictedTime(false);
+        code.setRestrictedViews(false);
+        code.setRestricted(false);
+
+        if(code.getTime() < 0){
+            code.setTime(0L);
+        }
+        if(code.getViews() < 0){
+            code.setViews(0L);
+        }
+
+        if(code.getTime() > 0){
+            code.setRestrictedTime(true);
+        }
+        if(code.getViews() > 0){
+            code.setRestrictedViews(true);
+        }
+
+        if(code.getRestrictedTime() || code.getRestrictedViews()){
+            code.setRestricted(true);
+        }
+
+        code.setTerminateDate(code.getPreciseDate().plusSeconds(code.getTime()));
+
+        return code;
+    }
+
+    private String formatDate(LocalDateTime dateToFormat){
+        final String DATE_FORMATTER= "yyyy/MM/dd HH:mm:ss";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
+        return dateToFormat.format(formatter);
+    }
 }
